@@ -1,11 +1,26 @@
-import urllib2, json, re, urlparse
+#!/usr/bin/env python
+
+"""
+An unofficial API for pitchfork.com reviews.
+
+author: Michal Czaplinski
+email: mmczaplinski@gmail.com
+"""
+
+import urllib2
+import json
+import re
+import urlparse
+import difflib
 from bs4 import BeautifulSoup
 
 
-
 def replace_breaks(html):
+    """
+    Replaces all the <br> tags in the html with newlines '\n'
+    """
     breakline = html.br
-    while html.br != None:
+    while html.br is not None:
         breakline.insert_before('\n')
         html.br.decompose()
         breakline = html.br
@@ -13,10 +28,17 @@ def replace_breaks(html):
 
 
 class Review:
+    """
+    Class representing the fetched review.
+    Includes methods for getting the score, the text of the review
+    (editorial), the album cover, label, year as well as the true
+    (matched) album and artist names.
+    """
 
-    def __init__(self, artist, album, searched_artist, searched_album , query, url, soup):
+    def __init__(self, searched_artist, searched_album, matched_artist,
+                 matched_album, query, url, soup):
         self.searched_artist = searched_artist
-        self.searched_album = album
+        self.searched_album = searched_album
         self.matched_artist = matched_artist
         self.matched_album = matched_album
         self.query = query
@@ -24,11 +46,13 @@ class Review:
         self.soup = soup
 
     def score(self):
+        """ Returns the album score. """
         rating = self.soup.find(class_='score').text
         rating = float(rating.strip(' '))
         return rating
 
     def editorial(self):
+        """ Returns the text of the review. """
         review_html = self.soup.find(class_='editorial')
         review_html = replace_breaks(review_html).find_all('p')
         review_text = ''
@@ -37,71 +61,134 @@ class Review:
         return review_text
 
     def cover(self):
+        """ Returns the link to the album cover. """
         artwork = self.soup.find(class_='artwork')
         image_link = artwork.img['src']
         return image_link
 
     def artist(self):
+        """ Returns the artist name that pitchfork matched to our search. """
         return self.matched_artist
 
     def album(self):
+        """ Returns the album name that pitchfork matched to our search. """
         return self.matched_album
 
     def label(self):
-        label = soup.find('info').h3.get_text()
+        """ Returns the name of the record label that released the album. """
+        label = self.soup.find('info').h3.get_text()
         label = label[:label.index(';')]
+        return label
 
     def year(self):
-        year = soup.find('info').h3.get_text()
+        """
+        Returns the year the album was released.
+        In case of a reissue album, the year of original release as well as
+        the year of the reissue is given separated by '/'.
+        """
+        year = self.soup.find('info').h3.get_text()
         year = year[year.index(';')+1:].strip(' ')
+        return year
 
+    def __repr__(self):
+        return self.__class__.__name__+repr((self.searched_artist,
+                                             self.searched_album,
+                                             self.matched_artist,
+                                             self.matched_album,
+                                             self.query,
+                                             self.url,
+                                             'self.soup'))
+
+
+class MultiReview(Review):
+
+    def __init__(self, searched_artist, searched_album, matched_artist,
+                 matched_album, query, url, soup):
+        self.searched_artist = searched_artist
+        self.searched_album = searched_album
+        self.matched_artist = matched_artist
+        self.matched_album = matched_album
+        self.query = query
+        self.url = url
+        self.soup = soup
+        self.info = soup.find('h2', text=self.matched_album).parent
+
+    def score(self):
+        """ Returns the album score. """
+        rating = self.info.find(class_='score').text
+        rating = float(rating.strip(' '))
+        return rating
+
+    def label(self):
+        """ Returns the name of the record label that released the album. """
+        label = self.info.h3.get_text().strip()
+        label = label[:label.index(';')]
+        return label
+
+    def cover(self):
+        """ Returns the link to the album cover. """
+        artwork = self.info.parent.find(class_='artwork')
+        image_link = artwork.img['src']
+        return image_link
+
+    def year(self):
+        """
+        Returns the year the album was released.
+        In case of a reissue album, the year of original release as well as
+        the year of the reissue is given separated by '/'.
+        """
+        year = self.info.h3.get_text()
+        year = year[year.index(';')+1:].strip()
+        return year
 
 
 def search(artist, album):
+    """
+    Look for the review of the specified album by the specified artist.
+    Returns either a Review object or a MultiReview object depending on
+    the type of review because some pitchfork reviews cover multiple albums.
+    """
+
+    # replace spaces in the url with the '%20'
     query = re.sub('\s+', '%20', artist + '%20' + album)
-    text = urllib2.urlopen('http://pitchfork.com/search/ac/?query=' + query).read()
+    response = urllib2.urlopen('http://pitchfork.com/search/ac/?query=' + query)
+    text = response.read()
+
+    # the server responds with json so we load it into a dictionary
     obj = json.loads(text)
 
-    artist_and_album = [ x for x in obj if x['label'] == 'Reviews'][0]['objects'][0]['name']
-    matched_artist = artist_and_album.split(' - ')[0]
-    matched_album = artist_and_album.split(' - ')[1]
+    try:
+        # get the nested dictionary containing url to the review and album name
+        review_dict = [x for x in obj if x['label'] == 'Reviews'][0]['objects'][0]
+    except IndexError:
+        raise IndexError('The search returned no results! Try again with diferent parameters.')
 
-    url = [ x for x in obj if x['label'] == 'Reviews'][0]['objects'][0]['url']
+    url = review_dict['url']
+    matched_artist = review_dict['name'].split(' - ')[0]
+
+    # fetch the review page
     full_url = urlparse.urljoin('http://pitchfork.com/', url)
     response_text = urllib2.urlopen(full_url).read()
     soup = BeautifulSoup(response_text)
-    review = Review(artist, album, searched_artist, searched_album , query, url, soup)
 
-    return review
+    # check if the review does not review multiple albums
+    if soup.find(class_='review-multi') is None:
+        matched_album = review_dict['name'].split(' - ')[1]
 
+        return Review(artist, album, matched_artist, matched_album, query, url, soup)
+    else:
+        # get the titles of all the albums in the multi-review
+        titles = [title.get_text() for title in soup.find(class_='review-meta').find_all('h2')]
 
+        try:
+            # find the album title closest matching to the one searched for
+            matched_album = difflib.get_close_matches(album, titles, cutoff=0.1)[0]
+        except IndexError:
+            raise IndexError('The supplied album information was insufficient...')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return MultiReview(artist, album, matched_artist, matched_album, query, url, soup)
 
 
+# TO DO
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+# write tests
