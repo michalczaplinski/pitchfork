@@ -1,3 +1,60 @@
-## python-pitchfork
+pitchfork
+=========
+An unofficial API for [pitchfork.com](http://www.pitchfork.com) reviews.
 
-An unofficial API for pitchfork.com
+
+Installation
+------------
+You can either clone this repository:
+
+```sh
+git clone https://github.com/michalczaplinski/pitchfork.git
+```
+or get it from [python package index](https://pypi.python.org/pypi):
+
+```sh
+pip install pitchfork
+```
+
+Usage
+-----
+```python
+>> import pitchfork
+
+>> p = pitchfork.search('kanye west', 'my beautiful') #the title is autocompleted
+>> p.album() # all returned strings are unicode
+u'My Beautiful Dark Twisted Fantasy'
+
+>> p.label()
+u'Def Jam / Roc-A-Fella'
+
+>> p.editorial()[:100] # get the full text of the review
+u"Kanye West's 35-minute super-video,\xa0Runaway, peaks with a parade. Fireworks flash while red hoods ma"
+
+# the link to the album cover image
+>> p.cover()
+'http://cdn4.pitchfork.com/albums/15935/homepage_large.831179e9.jpg'
+
+>> p.score()
+10.0
+# pretty overrated IMHO!
+```
+
+
+Tests
+-----
+
+You can run the basic tests located in the ``tests`` directory with:
+```sh
+$ cd path/to/pitchfork
+$ python -m unittest discover
+```
+
+License
+-------
+MIT
+
+
+Contributions
+-------------
+If you want to add some new feature, suggest improvement or whatnot you're welcome to message me or send a pull request!

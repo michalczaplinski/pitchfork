@@ -1,9 +1,5 @@
-from pitchfork import search, Review, MultiReview
+from pitchfork.pitchfork import search, Review, MultiReview
 import unittest
-
-
-# review = search('mogwai', 'come on')
-multi_review = search('radiohead', 'ok computer')
 
 
 class TestReview(unittest.TestCase):
