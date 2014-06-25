@@ -11,8 +11,8 @@ setup(
     url='http://pypi.python.org/pypi/pitchfork/',
     license='LICENSE.txt',
     description='Unofficial API for pitchfork.com reviews',
-    long_description=open('README.md').read(),
-    install_requires=["beautifulsoup4 >= 4.3.2"],
+    long_description=open('README.rst').read(),
+    install_requires=['beautifulsoup4'],
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',

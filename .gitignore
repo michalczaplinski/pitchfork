@@ -2,3 +2,5 @@
 build
 dist
 .DS_Store
+README.html
+README.rst

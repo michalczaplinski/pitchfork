@@ -5,30 +5,34 @@ An unofficial API for [pitchfork.com](http://www.pitchfork.com) reviews.
 
 Installation
 ------------
-You can either clone this repository:
 
-```sh
-git clone https://github.com/michalczaplinski/pitchfork.git
-```
-or get it from [python package index](https://pypi.python.org/pypi):
+You can get it from [python package index](https://pypi.python.org/pypi):
 
 ```sh
 pip install pitchfork
 ```
 
+You can also clone the repository, but note that ``pitchfork`` depends on ``beautifulsoup4`` for HTML parsing so you will have to install it yourself.
+
+```sh
+git clone https://github.com/michalczaplinski/pitchfork.git
+```
+
+
 Usage
 -----
+
 ```python
 >> import pitchfork
 
->> p = pitchfork.search('kanye west', 'my beautiful') #the title is autocompleted
->> p.album() # all returned strings are unicode
+>> p = pitchfork.search('kanye west', 'my beautiful') # the title is autocompleted
+>> p.album() # the full album title
 u'My Beautiful Dark Twisted Fantasy'
 
 >> p.label()
 u'Def Jam / Roc-A-Fella'
 
->> p.editorial()[:100] # get the full text of the review
+>> p.editorial()[:100] # get the first 100 characters of the review.
 u"Kanye West's 35-minute super-video,\xa0Runaway, peaks with a parade. Fireworks flash while red hoods ma"
 
 # the link to the album cover image
