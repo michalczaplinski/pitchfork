@@ -12,7 +12,7 @@ You can get it from [python package index](https://pypi.python.org/pypi):
 pip install pitchfork
 ```
 
-You can also clone the repository, but note that ``pitchfork`` depends on ``beautifulsoup4`` for HTML parsing so you will have to install it yourself.
+You can also clone the repository, but note that ``pitchfork`` depends on ``beautifulsoup4`` for HTML parsing so you first have to install ``beautifulsoup4`` yourself !!!
 
 ```sh
 git clone https://github.com/michalczaplinski/pitchfork.git
@@ -50,7 +50,7 @@ Tests
 
 You can run the basic tests located in the ``tests`` directory with:
 ```sh
-$ cd path/to/pitchfork
+$ cd path/to/tests
 $ python -m unittest discover
 ```
 

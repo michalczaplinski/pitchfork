@@ -1,4 +1,7 @@
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 setup(
     name='pitchfork',
@@ -6,12 +9,11 @@ setup(
     author='Michal Czaplinski',
     author_email='mmczaplinski@gmail.com',
     packages=['pitchfork', 'tests'],
-    test_suite='tests',
     scripts=[],
     url='http://pypi.python.org/pypi/pitchfork/',
     license='LICENSE.txt',
     description='Unofficial API for pitchfork.com reviews',
-    long_description=open('README.rst').read(),
+    long_description=open('README').read(),
     install_requires=['beautifulsoup4'],
     classifiers=[
         'License :: OSI Approved :: MIT License',
