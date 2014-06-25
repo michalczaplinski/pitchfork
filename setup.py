@@ -18,9 +18,9 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
-        'Topic :: Internet :: WWW/HTTP :: Browsers'
-        'Topic :: Internet :: WWW/HTTP :: Indexing/Search'
-        'Topic :: Multimedia :: Sound/Audio'
-        'Topic :: Utilities'
+        'Topic :: Internet :: WWW/HTTP :: Browsers',
+        'Topic :: Internet :: WWW/HTTP :: Indexing/Search',
+        'Topic :: Multimedia :: Sound/Audio',
+        'Topic :: Utilities',
     ],
 )
