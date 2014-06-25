@@ -48,7 +48,7 @@ class Review:
     def score(self):
         """ Returns the album score. """
         rating = self.soup.find(class_='score').text
-        rating = float(rating.strip(' '))
+        rating = float(rating.strip())
         return rating
 
     def editorial(self):
@@ -63,21 +63,23 @@ class Review:
     def cover(self):
         """ Returns the link to the album cover. """
         artwork = self.soup.find(class_='artwork')
-        image_link = artwork.img['src']
+        image_link = artwork.img['src'].strip()
         return image_link
 
     def artist(self):
         """ Returns the artist name that pitchfork matched to our search. """
-        return self.matched_artist
+        artist = self.matched_artist.strip()
+        return artist
 
     def album(self):
         """ Returns the album name that pitchfork matched to our search. """
-        return self.matched_album
+        album = self.matched_album.strip()
+        return album
 
     def label(self):
         """ Returns the name of the record label that released the album. """
-        label = self.soup.find('info').h3.get_text()
-        label = label[:label.index(';')]
+        label = self.soup.find(class_='info').h3.get_text()
+        label = label[:label.index(';')].strip()
         return label
 
     def year(self):
@@ -86,8 +88,8 @@ class Review:
         In case of a reissue album, the year of original release as well as
         the year of the reissue is given separated by '/'.
         """
-        year = self.soup.find('info').h3.get_text()
-        year = year[year.index(';')+1:].strip(' ')
+        year = self.soup.find(class_='info').h3.get_text()
+        year = year[year.index(';')+1:].strip()
         return year
 
     def __repr__(self):
@@ -97,7 +99,7 @@ class Review:
                                              self.matched_album,
                                              self.query,
                                              self.url,
-                                             'self.soup'))
+                                             str(self.soup.__class__)))
 
 
 class MultiReview(Review):
@@ -116,13 +118,13 @@ class MultiReview(Review):
     def score(self):
         """ Returns the album score. """
         rating = self.info.find(class_='score').text
-        rating = float(rating.strip(' '))
+        rating = float(rating.strip())
         return rating
 
     def label(self):
         """ Returns the name of the record label that released the album. """
-        label = self.info.h3.get_text().strip()
-        label = label[:label.index(';')]
+        label = self.info.h3.get_text()
+        label = label[:label.index(';')].strip()
         return label
 
     def cover(self):
@@ -187,8 +189,3 @@ def search(artist, album):
             raise IndexError('The supplied album information was insufficient...')
 
         return MultiReview(artist, album, matched_artist, matched_album, query, url, soup)
-
-
-# TO DO
-
-# write tests
