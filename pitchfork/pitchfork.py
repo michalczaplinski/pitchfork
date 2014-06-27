@@ -7,12 +7,20 @@ author: Michal Czaplinski
 email: mmczaplinski@gmail.com
 """
 
-import urllib2
 import json
 import re
-import urlparse
 import difflib
+import sys
 from bs4 import BeautifulSoup
+
+
+if sys.version_info >= (3, 0):
+    from urllib.parse import urljoin
+    from urllib.request import urlopen
+    unicode = str
+else:
+    from urllib2 import urlopen
+    from urlparse import urljoin
 
 
 def replace_breaks(html):
@@ -153,7 +161,7 @@ def search(artist, album):
 
     # replace spaces in the url with the '%20'
     query = re.sub('\s+', '%20', artist + '%20' + album)
-    response = urllib2.urlopen('http://pitchfork.com/search/ac/?query=' + query)
+    response = urlopen('http://pitchfork.com/search/ac/?query=' + query)
     text = response.read()
 
     # the server responds with json so we load it into a dictionary
@@ -169,8 +177,8 @@ def search(artist, album):
     matched_artist = review_dict['name'].split(' - ')[0]
 
     # fetch the review page
-    full_url = urlparse.urljoin('http://pitchfork.com/', url)
-    response_text = urllib2.urlopen(full_url).read()
+    full_url = urljoin('http://pitchfork.com/', url)
+    response_text = urlopen(full_url).read()
     soup = BeautifulSoup(response_text)
 
     # check if the review does not review multiple albums
