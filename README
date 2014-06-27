@@ -4,11 +4,11 @@ pitchfork
 An unofficial API for `pitchfork.com <http://www.pitchfork.com>`__
 reviews.
 
-+--------------------------------------------------------------------------------------------------------------------------------------------+--------------------+-----------------------+
-| Build Status                                                                                                                               | Version            | Downloads (30 days)   |
-+============================================================================================================================================+====================+=======================+
-| `[Build Status](https://travis-ci.org/michalczaplinski/pitchfork.svg?branch=master <https://travis-ci.org/michalczaplinski/pitchfork>`__   | |Latest Version|   | |Downloads|           |
-+--------------------------------------------------------------------------------------------------------------------------------------------+--------------------+-----------------------+
++------------------+--------------------+-----------------------+
+| Build Status     | Version            | Downloads (30 days)   |
++==================+====================+=======================+
+| |Build Status|   | |Latest Version|   | |Downloads|           |
++------------------+--------------------+-----------------------+
 
 Installation
 ------------
@@ -74,6 +74,8 @@ Contributions
 If you want to add some new feature, suggest improvement or whatnot
 you're welcome to message me or send a pull request!
 
+.. |Build Status| image:: https://travis-ci.org/michalczaplinski/pitchfork.svg?branch=master
+   :target: https://travis-ci.org/michalczaplinski/pitchfork
 .. |Latest Version| image:: https://pypip.in/v/pitchfork/badge.png
    :target: https://pypi.python.org/pypi/pitchfork/
 .. |Downloads| image:: https://pypip.in/d/pitchfork/badge.png
