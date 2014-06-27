@@ -3,6 +3,11 @@ pitchfork
 An unofficial API for [pitchfork.com](http://www.pitchfork.com) reviews.
 
 
+| Build Status | Version | Downloads (30 days) |
+| ------------ | ------- | ------------------- |
+| [![Build Status](https://travis-ci.org/michalczaplinski/pitchfork.svg?branch=master](https://travis-ci.org/michalczaplinski/pitchfork) | [![Latest Version](https://pypip.in/v/pitchfork/badge.png)](https://pypi.python.org/pypi/pitchfork/) | [![Downloads](https://pypip.in/d/pitchfork/badge.png)](https://pypi.python.org/pypi/pitchfork/) |
+
+
 Installation
 ------------
 
