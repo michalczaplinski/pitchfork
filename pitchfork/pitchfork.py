@@ -162,7 +162,7 @@ def search(artist, album):
     # replace spaces in the url with the '%20'
     query = re.sub('\s+', '%20', artist + '%20' + album)
     response = urlopen('http://pitchfork.com/search/ac/?query=' + query)
-    text = response.read()
+    text = response.read().decode()
 
     # the server responds with json so we load it into a dictionary
     obj = json.loads(text)
