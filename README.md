@@ -1,6 +1,6 @@
 pitchfork
 =========
-An unofficial API for [pitchfork.com](http://www.pitchfork.com) reviews.
+An unofficial python API for [pitchfork.com](http://www.pitchfork.com) reviews.
 
 
 | Build Status | Version | Downloads (30 days) |
