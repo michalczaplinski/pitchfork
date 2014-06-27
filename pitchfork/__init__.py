@@ -30,4 +30,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from pitchfork import search
+import sys
+
+if sys.version_info >= (3, 0):
+    from pitchfork.pitchfork import search
+else:
+    from pitchfork import search
