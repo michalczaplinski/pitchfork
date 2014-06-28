@@ -5,7 +5,7 @@ except ImportError:
 
 setup(
     name='pitchfork',
-    version='v0.1.0',
+    version='v0.1.1',
     author='Michal Czaplinski',
     author_email='mmczaplinski@gmail.com',
     packages=['pitchfork', 'tests'],
