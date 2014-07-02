@@ -17,9 +17,10 @@ from bs4 import BeautifulSoup
 if sys.version_info >= (3, 0):
     from urllib.parse import urljoin
     from urllib.request import urlopen
+    from urllib.request import Request
     unicode = str
 else:
-    from urllib2 import urlopen
+    from urllib2 import urlopen, Request
     from urlparse import urljoin
 
 
@@ -161,7 +162,11 @@ def search(artist, album):
 
     # replace spaces in the url with the '%20'
     query = re.sub('\s+', '%20', artist + '%20' + album)
-    response = urlopen('http://pitchfork.com/search/ac/?query=' + query)
+    # using a custom user agent header
+    request = Request(url='http://pitchfork.com/search/ac/?query=' + query,
+                      data=None,
+                      headers={'User-Agent': 'michalczaplinski/pitchfork-v0.1'})
+    response = urlopen(request)
     text = response.read().decode()
 
     # the server responds with json so we load it into a dictionary
@@ -178,7 +183,10 @@ def search(artist, album):
 
     # fetch the review page
     full_url = urljoin('http://pitchfork.com/', url)
-    response_text = urlopen(full_url).read()
+    request = Request(url=full_url,
+                      data=None,
+                      headers={'User-Agent': 'michalczaplinski/pitchfork-v0.1'})
+    response_text = urlopen(request).read()
     soup = BeautifulSoup(response_text)
 
     # check if the review does not review multiple albums
