@@ -28,7 +28,7 @@ class TestReview(unittest.TestCase):
         self.assertEqual(self.review.url, '/reviews/albums/19466-mogwai-come-on-die-young-deluxe-edition/')
 
     def test_review_to_json(self):
-        input_dict = self.review.json_safe_dict()
+        input_dict = self.review._json_safe_dict()
         output_dict = json.loads(self.review.to_json())
         for input_key in input_dict.keys():
             self.assertEqual(output_dict[input_key], input_dict[input_key])
@@ -58,7 +58,7 @@ class TestMultiReview(unittest.TestCase):
         self.assertEqual(self.multi_review.url, '/reviews/albums/12938-pablo-honey-collectors-edition-the-bends-collectors-edition-ok-computer-collectors-edition/')
 
     def test_multi_review_to_json(self):
-        input_dict = self.multi_review.json_safe_dict()
+        input_dict = self.multi_review._json_safe_dict()
         output_dict = json.loads(self.multi_review.to_json())
         for input_key in input_dict.keys():
             self.assertEqual(output_dict[input_key], input_dict[input_key])
