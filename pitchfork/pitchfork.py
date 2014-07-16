@@ -100,6 +100,21 @@ class Review:
         year = self.soup.find(class_='info').h3.get_text()
         year = year[year.index(';')+1:].strip()
         return year
+    def json_safe_dict(self):
+        """
+        Returns a dictionary representation of object where 
+        the soup key's value's special characters are escaped
+        """
+        d = self.__dict__.copy()
+        d['soup'] = d['soup'].prettify()
+        return d
+
+    def to_json(self):
+        """
+        Returns the attributes of the album review formatted as json.
+        """
+        d = self.json_safe_dict()
+        return json.dumps(d)
 
     def __repr__(self):
         return self.__class__.__name__+repr((self.searched_artist,
@@ -152,6 +167,19 @@ class MultiReview(Review):
         year = year[year.index(';')+1:].strip()
         return year
 
+    def json_safe_dict(self):
+        """
+        Returns a dictionary representation of object where 
+        the soup key's value's special characters are escaped
+        """
+        d = self.__dict__.copy()
+        d['soup'] = d['soup'].prettify()
+        d['info'] = d['info'].prettify()
+        return d
+
+    def to_json(self):
+        d = self.json_safe_dict()
+        return json.dumps(d)
 
 def search(artist, album):
     """
