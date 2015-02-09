@@ -49,7 +49,6 @@ u"Kanye West's 35-minute super-video,\xa0Runaway, peaks with a parade. Fireworks
 # pretty overrated IMHO!
 ```
 
-
 Tests
 -----
 
