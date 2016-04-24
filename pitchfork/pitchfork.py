@@ -191,7 +191,7 @@ def search(artist, album):
     # replace spaces in the url with the '%20'
     query = re.sub('\s+', '%20', artist + '%20' + album)
     # using a custom user agent header
-    request = Request(url='http://pitchfork.com/search/ac/?query=' + query,
+    request = Request(url='http://pitchfork.com/search/?query=' + query + '#result-albumreviews',
                       data=None,
                       headers={'User-Agent': 'michalczaplinski/pitchfork-v0.1'})
     response = urlopen(request)
