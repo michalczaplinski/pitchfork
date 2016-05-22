@@ -191,23 +191,23 @@ def search(artist, album):
     # replace spaces in the url with the '%20'
     query = re.sub('\s+', '%20', artist + '%20' + album)
     # using a custom user agent header
-    request = Request(url='http://pitchfork.com/search/?query=' + query + '#result-albumreviews',
+    request = Request(url='http://pitchfork.com/search/?query=' + query,
                       data=None,
                       headers={'User-Agent': 'michalczaplinski/pitchfork-v0.1'})
     response = urlopen(request)
-    text = response.read().decode()
+    text = response.read().decode().split('window.App=')[1].split(';')[0]
 
     # the server responds with json so we load it into a dictionary
     obj = json.loads(text)
 
     try:
         # get the nested dictionary containing url to the review and album name
-        review_dict = [x for x in obj if x['label'] == 'Reviews'][0]['objects'][0]
+        review_dict = obj['context']['dispatcher']['stores']['SearchStore']['results']['albumreviews']['items'][0]
     except IndexError:
         raise IndexError('The search returned no results! Try again with diferent parameters.')
 
-    url = review_dict['url']
-    matched_artist = review_dict['name'].split(' - ')[0]
+    url = review_dict['site_url']
+    matched_artist = review_dict['content'].strip().split('\n\n\n')[0]
 
     # fetch the review page
     full_url = urljoin('http://pitchfork.com/', url)
@@ -219,7 +219,7 @@ def search(artist, album):
 
     # check if the review does not review multiple albums
     if soup.find(class_='review-multi') is None:
-        matched_album = review_dict['name'].split(' - ')[1]
+        matched_album = review_dict['title']
 
         return Review(artist, album, matched_artist, matched_album, query, url, soup)
     else:
