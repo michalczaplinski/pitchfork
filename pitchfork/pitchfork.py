@@ -52,7 +52,6 @@ class Review:
         self.matched_album = matched_album
         self.query = query
         self.url = url
-        print(soup.decode())
         self.soup = soup
 
     def score(self):
