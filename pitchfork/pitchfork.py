@@ -87,8 +87,7 @@ class Review:
 
     def label(self):
         """ Returns the name of the record label that released the album. """
-        label = self.soup.find(class_='info').h3.get_text()
-        label = label[:label.index(';')].strip()
+        label = self.soup.find(class_='label-list').get_text()
         return label
 
     def year(self):
@@ -99,7 +98,7 @@ class Review:
         """
         year = self.soup.find(class_='year').contents[1].get_text()
         return year
-        
+
     def _json_safe_dict(self):
         """
         Returns a dictionary representation of object where
