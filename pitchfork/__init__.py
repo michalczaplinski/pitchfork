@@ -32,6 +32,8 @@ SOFTWARE.
 
 import sys
 
+__version__ = "0.1.4"
+
 if sys.version_info >= (3, 0):
     from pitchfork.pitchfork import search
 else:
