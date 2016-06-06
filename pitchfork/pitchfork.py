@@ -97,9 +97,9 @@ class Review:
         In case of a reissue album, the year of original release as well as
         the year of the reissue is given separated by '/'.
         """
-        year = self.soup.find(class_='info').h3.get_text()
-        year = year[year.index(';')+1:].strip()
+        year = self.soup.find(class_='year').contents[1].get_text()
         return year
+        
     def _json_safe_dict(self):
         """
         Returns a dictionary representation of object where
