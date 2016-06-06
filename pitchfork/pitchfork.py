@@ -102,7 +102,7 @@ class Review:
         return year
     def _json_safe_dict(self):
         """
-        Returns a dictionary representation of object where 
+        Returns a dictionary representation of object where
         the soup key's value's special characters are escaped
         """
         d = self.__dict__.copy()
@@ -169,7 +169,7 @@ class MultiReview(Review):
 
     def _json_safe_dict(self):
         """
-        Returns a dictionary representation of object where 
+        Returns a dictionary representation of object where
         the soup key's value's special characters are escaped
         """
         d = self.__dict__.copy()
@@ -215,7 +215,7 @@ def search(artist, album):
                       data=None,
                       headers={'User-Agent': 'michalczaplinski/pitchfork-v0.1'})
     response_text = urlopen(request).read()
-    soup = BeautifulSoup(response_text)
+    soup = BeautifulSoup(response_text, "lxml")
 
     # check if the review does not review multiple albums
     if soup.find(class_='review-multi') is None:
