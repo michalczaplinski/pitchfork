@@ -25,7 +25,10 @@ class TestReview(unittest.TestCase):
         self.assertEqual(self.review.year(), '1999/2014')
 
     def test_score(self):
-        self.assertEqual(self.score(), 8.3)
+        self.assertEqual(self.review.score(), 8.3)
+
+    def test_editorial(self):
+        self.assertTrue(self.review.editorial().startswith('Though few of their songs contain actual words'))
 
     def test_review_url(self):
         self.assertEqual(self.review.url, '/reviews/albums/19466-mogwai-come-on-die-young-deluxe-edition/')

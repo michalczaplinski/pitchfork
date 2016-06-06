@@ -63,7 +63,6 @@ class Review:
     def editorial(self):
         """ Returns the text of the review. """
         return self.soup.find(class_='review-text').get_text()
-        return review_text
 
     def cover(self):
         """ Returns the link to the album cover. """
