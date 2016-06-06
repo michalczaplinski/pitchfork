@@ -5,7 +5,7 @@ except ImportError:
 
 setup(
     name='pitchfork',
-    version='v0.1.3',
+    version='v0.1.4',
     author='Michal Czaplinski',
     author_email='mmczaplinski@gmail.com',
     packages=['pitchfork', 'tests'],
@@ -18,7 +18,6 @@ setup(
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.0',
         'Programming Language :: Python :: 3.1',
