@@ -62,11 +62,7 @@ class Review:
 
     def editorial(self):
         """ Returns the text of the review. """
-        review_html = self.soup.find(class_='editorial')
-        review_html = replace_breaks(review_html).find_all('p')
-        review_text = ''
-        for paragraph in review_html:
-            review_text += paragraph.text + '\n\n'
+        return self.soup.find(class_='review-text').get_text()
         return review_text
 
     def cover(self):
