@@ -189,7 +189,7 @@ def search(artist, album):
                       data=None,
                       headers={'User-Agent': 'michalczaplinski/pitchfork-v0.1'})
     response = urlopen(request)
-    text = response.read().decode().split('window.App=')[1].split(';</script>')[0]
+    text = response.read().decode('UTF-8').split('window.App=')[1].split(';</script>')[0]
 
     # the server responds with json so we load it into a dictionary
     obj = json.loads(text)
