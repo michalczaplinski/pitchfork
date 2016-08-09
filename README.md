@@ -16,10 +16,12 @@ You can get it from [python package index](https://pypi.python.org/pypi):
 pip install pitchfork
 ```
 
-You can also clone the repository, but note that ``pitchfork`` depends on ``beautifulsoup4`` for HTML parsing so you first have to install ``beautifulsoup4`` yourself !!!
+You can also clone the repository, but note that ``pitchfork`` depends on ``beautifulsoup4`` for HTML parsing so you first have to install ``beautifulsoup4`` yourself:
 
 ```sh
 git clone https://github.com/michalczaplinski/pitchfork.git
+cd pitchfork
+pip install -r requirements.txt
 ```
 
 
