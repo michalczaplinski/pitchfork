@@ -1,6 +1,6 @@
 pitchfork
 =========
-An unofficial python API for [pitchfork.com](http://www.pitchfork.com) reviews.
+An unofficial python API for [pitchfork.com](http://www.pitchfork.com) reviews. A python 3 project.
 
 
 [![Build Status](https://travis-ci.org/michalczaplinski/pitchfork.svg?branch=master)]() 
@@ -13,7 +13,7 @@ Installation
 You can get it from [python package index](https://pypi.python.org/pypi):
 
 ```sh
-pip install pitchfork
+pip3 install pitchfork
 ```
 
 You can also clone the repository, but note that ``pitchfork`` depends on ``beautifulsoup4`` for HTML parsing so you first have to install ``beautifulsoup4`` yourself:
@@ -21,14 +21,14 @@ You can also clone the repository, but note that ``pitchfork`` depends on ``beau
 ```sh
 git clone https://github.com/michalczaplinski/pitchfork.git
 cd pitchfork
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 
 Usage
 -----
 
-```python
+```python3
 >> import pitchfork
 
 >> p = pitchfork.search('kanye west', 'my beautiful') # the title is autocompleted
@@ -56,7 +56,7 @@ Tests
 You can run the basic tests located in the ``tests`` directory with:
 ```sh
 $ cd path/to/tests
-$ python -m unittest discover
+$ python3 -m unittest discover
 ```
 
 License
