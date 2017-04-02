@@ -66,7 +66,7 @@ class Review:
 
     def cover(self):
         """ Returns the link to the album cover. """
-        artwork = self.soup.find(class_='artwork')
+        artwork = self.soup.find(class_='album-art')
         image_link = artwork.img['src'].strip()
         return image_link
 
@@ -91,7 +91,7 @@ class Review:
         In case of a reissue album, the year of original release as well as
         the year of the reissue is given separated by '/'.
         """
-        year = self.soup.find(class_='year').contents[1].get_text()
+        year = self.soup.find(class_='pub-date').get_text()
         return year
 
     def _json_safe_dict(self):
