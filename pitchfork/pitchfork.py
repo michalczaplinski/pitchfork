@@ -60,14 +60,22 @@ class Review:
         rating = float(rating.strip())
         return rating
 
+    def abstract(self):
+        """ Returns the text of the review's abstract. """
+        return self.soup.find(class_='review-detail__abstract').get_text()
+
     def editorial(self):
         """ Returns the text of the review. """
-        return self.soup.find(class_='review-text').get_text()
+        return self.soup.find(class_='contents dropcap').get_text()
+
+    def review_date(self):
+        """ Returns the date the review was published. """
+        return str(self.soup.find(class_='pub-date').contents[-1])        
 
     def cover(self):
         """ Returns the link to the album cover. """
-        artwork = self.soup.find(class_='album-art')
-        image_link = artwork.img['src'].strip()
+        artwork = self.soup.find(class_='single-album-tombstone__art')
+        image_link = artwork.findAll('img')[0]['src'].strip()
         return image_link
 
     def artist(self):
@@ -92,7 +100,7 @@ class Review:
         In case of a reissue album, the year of original release as well as
         the year of the reissue is given separated by '/'.
         """
-        year = str(self.soup.find(class_='year').contents[-1])
+        year = str(self.soup.find(class_='single-album-tombstone__meta-year').contents[-1])        
         return year
 
     def _json_safe_dict(self):
@@ -148,7 +156,7 @@ class MultiReview(Review):
 
     def cover(self):
         """ Returns the link to the album cover. """
-        artwork = self.info.parent.find(class_='artwork')
+        artwork = self.info.parent.find(class_='album-art')
         image_link = artwork.img['src']
         return image_link
 
