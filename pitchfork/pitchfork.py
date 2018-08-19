@@ -60,14 +60,22 @@ class Review:
         rating = float(rating.strip())
         return rating
 
+    def abstract(self):
+        """ Returns the text of the review's abstract. """
+        return self.soup.find(class_='review-detail__abstract').get_text()
+
     def editorial(self):
         """ Returns the text of the review. """
-        return self.soup.find(class_='review-text').get_text()
+        return self.soup.find(class_='contents dropcap').get_text()
+
+    def review_date(self):
+        """ Returns the date the review was published. """
+        return str(self.soup.find(class_='pub-date').contents[-1])        
 
     def cover(self):
         """ Returns the link to the album cover. """
-        artwork = self.soup.find(class_='artwork')
-        image_link = artwork.img['src'].strip()
+        artwork = self.soup.find(class_='single-album-tombstone__art')
+        image_link = artwork.findAll('img')[0]['src'].strip()
         return image_link
 
     def artist(self):
@@ -82,7 +90,8 @@ class Review:
 
     def label(self):
         """ Returns the name of the record label that released the album. """
-        label = self.soup.find(class_='label-list').get_text()
+        labels = list(set(self.soup.findAll(class_='labels-list__item')))
+        label = ' / '.join([l.get_text() for l in labels])
         return label
 
     def year(self):
@@ -91,7 +100,7 @@ class Review:
         In case of a reissue album, the year of original release as well as
         the year of the reissue is given separated by '/'.
         """
-        year = self.soup.find(class_='year').contents[1].get_text()
+        year = str(self.soup.find(class_='single-album-tombstone__meta-year').contents[-1])        
         return year
 
     def _json_safe_dict(self):
@@ -147,7 +156,7 @@ class MultiReview(Review):
 
     def cover(self):
         """ Returns the link to the album cover. """
-        artwork = self.info.parent.find(class_='artwork')
+        artwork = self.info.parent.find(class_='album-art')
         image_link = artwork.img['src']
         return image_link
 
@@ -200,8 +209,8 @@ def search(artist, album):
     except IndexError:
         raise IndexError('The search returned no results! Try again with diferent parameters.')
 
-    url = review_dict['site_url']
-    matched_artist = review_dict['content'].strip().split('\n\n\n')[0]
+    url = review_dict['url']
+    matched_artist = review_dict['artists'][0]['display_name']
 
     # fetch the review page
     full_url = urljoin('http://pitchfork.com/', url)
