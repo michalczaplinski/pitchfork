@@ -4,7 +4,7 @@ An unofficial python API for [pitchfork.com](http://www.pitchfork.com) reviews.
 
 
 [![Build Status](https://travis-ci.org/michalczaplinski/pitchfork.svg?branch=master)]() 
-[![PyPI](https://img.shields.io/pypi/pyversions/pitchfork.svg?maxAge=2592000)]()
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Pitchfork.svg)](https://pypi.org/project/pitchfork/)
 
 
 Installation
