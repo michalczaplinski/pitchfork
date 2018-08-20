@@ -2,7 +2,7 @@ pitchfork
 =========
 
 An unofficial python API for
-`pitchfork.com <http://www.pitchfork.com>`__ reviews.
+`pitchfork.com <http://www.pitchfork.com>`__ reviews. A python 3 project.
 
 +------------------+--------------------+-----------------------+
 | Build Status     | Version            | Downloads (30 days)   |
@@ -18,7 +18,7 @@ index <https://pypi.python.org/pypi>`__:
 
 .. code:: sh
 
-    pip install pitchfork
+    pip3 install pitchfork
 
 You can also clone the repository, but note that ``pitchfork`` depends
 on ``beautifulsoup4`` for HTML parsing so you first have to install
@@ -27,11 +27,13 @@ on ``beautifulsoup4`` for HTML parsing so you first have to install
 .. code:: sh
 
     git clone https://github.com/michalczaplinski/pitchfork.git
+    cd pitchfork
+    pip3 install -r requirements.txt
 
 Usage
 -----
 
-.. code:: python
+.. code:: python3
 
     >> import pitchfork
 
@@ -60,7 +62,7 @@ You can run the basic tests located in the ``tests`` directory with:
 
 .. code:: sh
 
-    $ cd pitchfork
+    $ cd path/to/tests 
     $ python3 -m unittest discover
 
 License
