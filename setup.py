@@ -14,7 +14,7 @@ setup(
     license='LICENSE.txt',
     description='Unofficial API for pitchfork.com reviews',
     long_description=open('README').read(),
-    install_requires=['beautifulsoup4'],
+    install_requires=['beautifulsoup4', 'lxml'],
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
