@@ -54,14 +54,14 @@ class Review:
 
     def abstract(self):
         """Return the text of the abstract."""
-        return self.soup.find(class_='review-detail__abstract').get_text()
+        return self.soup.find("meta", property = "og:description")["content"]
 
     def best_new_music(self):
         return self.soup.find(class_='bnm-arrows') != None
 
     def editorial(self):
         """Return the main review text."""
-        return self.soup.find(class_='contents dropcap').get_text()
+        return self.soup.find(class_='body__inner-container').get_text()
 
     def full_text(self):
         """Return a combination of the abstract and editorial."""
