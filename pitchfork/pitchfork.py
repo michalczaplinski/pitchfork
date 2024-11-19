@@ -62,7 +62,11 @@ class Review:
 
     def editorial(self):
         """Return the main review text."""
-        return self.soup.find(class_='body__inner-container').get_text()
+        editorial_soup = self.soup.find_all(class_='body__inner-container')
+        editorial_text_list = [None] * len(editorial_soup)
+        for i in range(0, len(editorial_soup)):
+            editorial_text_list[i] = editorial_soup[i].get_text()
+        return " ".join(editorial_text_list)
 
     def full_text(self):
         """Return a combination of the abstract and editorial."""
@@ -216,11 +220,11 @@ def search(artist, album):
     query = '{} {}'.format(artist, album)
     query = quote(query)
 
-    #New artist-first search
+    # New artist-first search
     query_artist = '{}'.format(artist)
     query_artist = quote(query_artist)
 
-    search_url='http://pitchfork.com/search/?query=' + query_artist
+    search_url = 'http://pitchfork.com/search/?query=' + query_artist
     html = requests.get(search_url)
     soup = BeautifulSoup(html.content, 'html.parser')
     results = soup.find("div", {"id": "1-Reviews"})
@@ -246,13 +250,17 @@ def search(artist, album):
         if len(split_multi_artists) > 1:
             split_seq_ratios = [None] * len(split_multi_artists)
             for i in range(0, len(split_multi_artists)):
-                split_seq_ratios[i] = difflib.SequenceMatcher(None, split_multi_artists[i], artist).ratio()
-            seq = [y for y in split_seq_ratios if y == max(split_seq_ratios)][0]
-            indiv_artist = [x for x, y in zip(split_multi_artists, split_seq_ratios) if y == max(split_seq_ratios)][0]
+                split_seq_ratios[i] = difflib.SequenceMatcher(
+                    None, split_multi_artists[i], artist).ratio()
+            seq = [y for y in split_seq_ratios if y ==
+                   max(split_seq_ratios)][0]
+            indiv_artist = [x for x, y in zip(
+                split_multi_artists, split_seq_ratios) if y == max(split_seq_ratios)][0]
             artist_seq_ratios.append(seq)
             artist_names_indiv.append(indiv_artist)
         else:
-            seq=difflib.SequenceMatcher(None, derived_artist.lower(), artist.lower()).ratio()
+            seq = difflib.SequenceMatcher(
+                None, derived_artist.lower(), artist.lower()).ratio()
             artist_seq_ratios.append(seq)
             artist_names_indiv.append(derived_artist)
 
@@ -268,22 +276,30 @@ def search(artist, album):
         if len(split_multi_albums) > 1:
             split_seq_ratios = [None] * len(split_multi_albums)
             for i in range(0, len(split_multi_albums)):
-                split_seq_ratios[i] = difflib.SequenceMatcher(None, split_multi_albums[i].lower(), album.lower()).ratio()
-            seq = [y for y in split_seq_ratios if y == max(split_seq_ratios)][0]
-            indiv_album = [x for x, y in zip(split_multi_albums, split_seq_ratios) if y == max(split_seq_ratios)][0]
+                split_seq_ratios[i] = difflib.SequenceMatcher(
+                    None, split_multi_albums[i].lower(), album.lower()).ratio()
+            seq = [y for y in split_seq_ratios if y ==
+                   max(split_seq_ratios)][0]
+            indiv_album = [x for x, y in zip(
+                split_multi_albums, split_seq_ratios) if y == max(split_seq_ratios)][0]
             album_seq_ratios.append(seq)
             album_names_indiv.append(indiv_album)
         else:
-            seq=difflib.SequenceMatcher(None, derived_album.lower(), album.lower()).ratio()
+            seq = difflib.SequenceMatcher(
+                None, derived_album.lower(), album.lower()).ratio()
             album_seq_ratios.append(seq)
             album_names_indiv.append(derived_album)
 
-    combined_seq_ratios = [x*y for x,y in zip(album_seq_ratios, artist_seq_ratios)]
-    #Take the individual album as matched album (multi-reviews are meaningless)
-    matched_album = [x for x,y in zip(album_names_indiv,combined_seq_ratios) if y == max(combined_seq_ratios)][0]
-    #Take the combined artist as matched artist (combined attribution has meaning)
-    matched_artist = [x for x,y in zip(artist_names_inc_multi,combined_seq_ratios) if y == max(combined_seq_ratios)][0]
-    url = [x for x,y in zip(review_urls,combined_seq_ratios) if y == max(combined_seq_ratios)][0]
+    combined_seq_ratios = [x*y for x,
+                           y in zip(album_seq_ratios, artist_seq_ratios)]
+    # Take the individual album as matched album (multi-reviews are meaningless)
+    matched_album = [x for x, y in zip(
+        album_names_indiv, combined_seq_ratios) if y == max(combined_seq_ratios)][0]
+    # Take the combined artist as matched artist (combined attribution has meaning)
+    matched_artist = [x for x, y in zip(
+        artist_names_inc_multi, combined_seq_ratios) if y == max(combined_seq_ratios)][0]
+    url = [x for x, y in zip(review_urls, combined_seq_ratios)
+           if y == max(combined_seq_ratios)][0]
 
     # fetch the review page
     full_url = urljoin('http://pitchfork.com/', url)
