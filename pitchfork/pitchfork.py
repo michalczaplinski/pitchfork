@@ -90,8 +90,15 @@ class Review:
 
     def label(self):
         """Return the name of the record label that released the album."""
-        labels = list(set(self.soup.findAll(class_='labels-list__item')))
-        label = ' / '.join([l.get_text() for l in labels])
+        tombstone = self.soup.find_all(class_="InfoSliceItem-nijBm gkeAyS")
+        tombstone_text = [(None, None)]*len(tombstone)
+        for i in range(0, len(tombstone)):
+            split_output = tombstone[i].get_text().split(":")
+            tombstone_text[i] = split_output
+            if split_output[0].lower().strip() == 'label':
+                label = split_output[1]
+        # labels = list(set(self.soup.findAll(class_='labels-list__item')))
+        # label = ' / '.join([l.get_text() for l in labels])
         return label
 
     def year(self):
