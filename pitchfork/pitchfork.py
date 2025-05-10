@@ -9,6 +9,7 @@ email: mmczaplinski@gmail.com
 
 import json
 import difflib
+import requests
 from bs4 import BeautifulSoup
 
 from urllib.parse import urljoin, quote
@@ -48,20 +49,29 @@ class Review:
 
     def score(self):
         """Return the album score."""
-        rating = self.soup.find(class_='score').text
+        rating = self.soup.find(
+            class_='ScoreBoxWrapper-iBCGEf kKSbwo').get_text()
         rating = float(rating.strip())
         return rating
 
     def abstract(self):
         """Return the text of the abstract."""
-        return self.soup.find(class_='review-detail__abstract').get_text()
+        return self.soup.find("meta", {'name': 'description'})["content"]
 
     def best_new_music(self):
-        return self.soup.find(class_='bnm-arrows') != None
+        score_bnm = self.soup.find(
+            "div", {"class": "ScoreBoxWrapper-iBCGEf kKSbwo"}).get_text().strip().split(" ")
+        bnm = " ".join(score_bnm[1:]).lower()
+        is_bnm = 'best' in bnm and 'new' in bnm
+        return is_bnm
 
     def editorial(self):
         """Return the main review text."""
-        return self.soup.find(class_='contents dropcap').get_text()
+        editorial_soup = self.soup.find_all(class_='body__inner-container')
+        editorial_text_list = [None] * len(editorial_soup)
+        for i in range(0, len(editorial_soup)):
+            editorial_text_list[i] = editorial_soup[i].get_text()
+        return " ".join(editorial_text_list)
 
     def full_text(self):
         """Return a combination of the abstract and editorial."""
@@ -69,6 +79,7 @@ class Review:
 
     def cover(self):
         """Return the link to the album cover."""
+        # doesn't work
         artwork = self.soup.find(class_='album-art')
         image_link = artwork.img['src'].strip()
         return image_link
@@ -85,8 +96,13 @@ class Review:
 
     def label(self):
         """Return the name of the record label that released the album."""
-        labels = list(set(self.soup.findAll(class_='labels-list__item')))
-        label = ' / '.join([l.get_text() for l in labels])
+        tombstone = self.soup.find_all(class_="InfoSliceItem-nijBm gkeAyS")
+        tombstone_text = [(None, None)]*len(tombstone)
+        for i in range(0, len(tombstone)):
+            split_output = tombstone[i].get_text().split(":")
+            tombstone_text[i] = split_output
+            if split_output[0].lower().strip() == 'label':
+                label = split_output[1]
         return label
 
     def year(self):
@@ -96,7 +112,7 @@ class Review:
         In case of a reissue album, the year of original release as well as
         the year of the reissue is given separated by '/'.
         """
-        year = self.soup.find(class_='single-album-tombstone__meta-year').get_text()[3:]
+        year = self.soup.find('time').get_text()
         return year
 
     def methods(self):
@@ -160,7 +176,7 @@ class MultiReview(Review):
         self.query = query
         self.url = url
         self.soup = soup
-        self.info = soup.find('h2', text=self.matched_album).parent
+        # self.info = soup.find('h2', text=self.matched_album).parent
 
     def score(self):
         """Return the album score."""
@@ -169,9 +185,11 @@ class MultiReview(Review):
         return rating
 
     def label(self):
-        """Return the name of the record label that released the album."""
-        label = self.info.h3.get_text()
-        label = label[:label.index(';')].strip()
+        """Return the name of the record label that released the FIRST album in multi-review."""
+        # can't get year of album if not first, probably need Selenium or sth
+        tombstone = self.soup.find_all(
+            class_="MultiReviewContentHeaderCaption-ldemwa dtKSbs")
+        label = tombstone[0].get_text().split('Dots')[1]
         return label
 
     def cover(self):
@@ -182,26 +200,27 @@ class MultiReview(Review):
 
     def year(self):
         """
-        Return the year the album was released.
+        Return the year the FIRST album in multi-review was released.
 
         In case of a reissue album, the year of original release as well as
         the year of the reissue is given separated by '/'.
         """
-        year = self.info.h3.get_text()
-        year = year[year.index(';') + 1:].strip()
+        tombstone = self.soup.find_all(
+            class_="MultiReviewContentHeaderCaption-ldemwa dtKSbs")
+        year = tombstone[0].get_text().split('Dots')[2]
         return year
 
     def _json_safe_dict(self):
         """Return a dictionary representation of object where the soup key's value's special characters are escaped."""
         d = self.__dict__.copy()
         d['soup'] = d['soup'].prettify()
-        d['info'] = d['info'].prettify()
         return d
 
     def to_json(self):
         """Return the attributes of the album review formatted as json."""
         d = self._json_safe_dict()
         return json.dumps(d)
+
 
 def search(artist, album):
     """
@@ -213,24 +232,93 @@ def search(artist, album):
     # escape special characters
     query = '{} {}'.format(artist, album)
     query = quote(query)
-    # using a custom user agent header
-    request = Request(url='http://pitchfork.com/search/?query=' + query,
-                      data=None,
-                      headers={'User-Agent': 'michalczaplinski/pitchfork-v0.1'})
-    response = urlopen(request)
-    text = response.read().decode('UTF-8').split('window.App=')[1].split(';</script>')[0]
 
-    # the server responds with json so we load it into a dictionary
-    obj = json.loads(text)
+    # New artist-first search
+    query_artist = '{}'.format(artist)
+    query_artist = quote(query_artist)
 
-    try:
-        # get the nested dictionary containing url to the review and album name
-        review_dict = obj['context']['dispatcher']['stores']['SearchStore']['results']['albumreviews']['items'][0]
-    except IndexError:
-        raise IndexError('The search returned no results! Try again with diferent parameters.')
+    search_url = 'http://pitchfork.com/search/?query=' + query_artist
+    html = requests.get(search_url)
+    soup = BeautifulSoup(html.content, 'html.parser')
+    results = soup.find("div", {"id": "1-Reviews"})
+    review_urls = []
+    for a in results.find_all('a', href=True):
+        indiv_url = a['href']
+        # print(indiv_url)
+        if indiv_url.startswith('/reviews/') and indiv_url not in review_urls:
+            review_urls.append(indiv_url)
 
-    url = review_dict['url']
-    matched_artist = review_dict['artists'][0]['display_name']
+    if len(review_urls) == 0:
+        print('No Reviews found!')
+        return None
+    artist_names_inc_multi = []
+    artist_names_indiv = []
+    artist_seq_ratios = []
+    for a in results.find_all('div', attrs={'data-testid': 'SummaryItemHed'}):
+        # print(a.text)
+        derived_artist = a.text
+        artist_names_inc_multi.append(derived_artist)
+        split_multi_artists = derived_artist.split("/")
+        split_multi_artists = [item.strip() for item in split_multi_artists]
+        if len(split_multi_artists) > 1:
+            split_seq_ratios = [None] * len(split_multi_artists)
+            for i in range(0, len(split_multi_artists)):
+                split_seq_ratios[i] = difflib.SequenceMatcher(
+                    None, split_multi_artists[i], artist).ratio()
+            seq = [y for y in split_seq_ratios if y ==
+                   max(split_seq_ratios)][0]
+            indiv_artist = [x for x, y in zip(
+                split_multi_artists, split_seq_ratios) if y == max(split_seq_ratios)][0]
+            artist_seq_ratios.append(seq)
+            artist_names_indiv.append(indiv_artist)
+        else:
+            seq = difflib.SequenceMatcher(
+                None, derived_artist.lower(), artist.lower()).ratio()
+            artist_seq_ratios.append(seq)
+            artist_names_indiv.append(derived_artist)
+
+    album_names_inc_multi = []
+    album_names_indiv = []
+    album_seq_ratios = []
+    is_multi_album = []
+    for a in results.find_all('h3', attrs={'data-testid': 'SummaryItemHed'}):
+        # print(a.text)
+        derived_album = a.text
+        album_names_inc_multi.append(derived_album)
+        split_multi_albums = derived_album.split("/")
+        split_multi_albums = [item.strip() for item in split_multi_albums]
+        if len(split_multi_albums) > 1:
+            is_multi_album.append(True)
+            split_seq_ratios = [None] * len(split_multi_albums)
+            for i in range(0, len(split_multi_albums)):
+                split_seq_ratios[i] = difflib.SequenceMatcher(
+                    None, split_multi_albums[i].lower(), album.lower()).ratio()
+            seq = [y for y in split_seq_ratios if y ==
+                   max(split_seq_ratios)][0]
+            indiv_album = [x for x, y in zip(
+                split_multi_albums, split_seq_ratios) if y == max(split_seq_ratios)][0]
+            album_seq_ratios.append(seq)
+            album_names_indiv.append(indiv_album)
+        else:
+            is_multi_album.append(False)
+            seq = difflib.SequenceMatcher(
+                None, derived_album.lower(), album.lower()).ratio()
+            album_seq_ratios.append(seq)
+            album_names_indiv.append(derived_album)
+
+    combined_seq_ratios = [x*y for x,
+                           y in zip(album_seq_ratios, artist_seq_ratios)]
+    # Take the individual album as matched album (multi-reviews are meaningless)
+    matched_album = [x for x, y in zip(
+        album_names_indiv, combined_seq_ratios) if y == max(combined_seq_ratios)][0]
+    # Take the combined artist as matched artist (combined attribution has meaning)
+    matched_artist = [x for x, y in zip(
+        artist_names_inc_multi, combined_seq_ratios) if y == max(combined_seq_ratios)][0]
+    url = [x for x, y in zip(review_urls, combined_seq_ratios)
+           if y == max(combined_seq_ratios)][0]
+
+    is_multi_album_match = [x for x, y in zip(is_multi_album, combined_seq_ratios)
+                            if y == max(combined_seq_ratios)][0]
 
     # fetch the review page
     full_url = urljoin('http://pitchfork.com/', url)
@@ -241,18 +329,7 @@ def search(artist, album):
     soup = BeautifulSoup(response_text, "lxml")
 
     # check if the review does not review multiple albums
-    if soup.find(class_='review-multi') is None:
-        matched_album = review_dict['title']
-
+    if is_multi_album_match is False:
         return Review(artist, album, matched_artist, matched_album, query, url, soup)
     else:
-        # get the titles of all the albums in the multi-review
-        titles = [title.get_text() for title in soup.find(class_='review-meta').find_all('h2')]
-
-        try:
-            # find the album title closest matching to the one searched for
-            matched_album = difflib.get_close_matches(album, titles, cutoff=0.1)[0]
-        except IndexError:
-            raise IndexError('The supplied album information was insufficient...')
-
         return MultiReview(artist, album, matched_artist, matched_album, query, url, soup)
