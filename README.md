@@ -1,4 +1,6 @@
-> **Note:** As of May 2025, this project is not actively maintained. If you've contributed before contact me and I'll happily give you maintainer status.
+<div style="background-color:#fff700; color:#d80000; padding:10px; border-radius:6px; font-weight:bold; font-size:1.1em;">
+⚠️ <strong>Note:</strong> As of May 2025, this project is not actively maintained. If you've contributed before contact me and I'll happily give you maintainer status.
+</div>
 
 # pitchfork
 
