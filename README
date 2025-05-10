@@ -1,35 +1,35 @@
-pitchfork
-=========
+.. note::
+As of May 2025, this project is not actively maintained. If you've contributed before contact me and I'll happily give you maintainer status.
+
+# pitchfork
 
 An unofficial python API for
-`pitchfork.com <http://www.pitchfork.com>`__ reviews.
+`pitchfork.com <http://www.pitchfork.com>`\_\_ reviews.
 
 +------------------+--------------------+-----------------------+
-| Build Status     | Version            | Downloads (30 days)   |
+| Build Status | Version | Downloads (30 days) |
 +==================+====================+=======================+
-| |Build Status|   | |Latest Version|   | |Downloads|           |
+| |Build Status| | |Latest Version| | |Downloads| |
 +------------------+--------------------+-----------------------+
 
-Installation
-------------
+## Installation
 
 You can get it from `python package
-index <https://pypi.python.org/pypi>`__:
+index <https://pypi.python.org/pypi>`\_\_:
 
 .. code:: sh
 
     pip install pitchfork
 
-You can also clone the repository, but note that ``pitchfork`` depends
-on ``beautifulsoup4`` for HTML parsing so you first have to install
-``beautifulsoup4`` yourself !!!
+You can also clone the repository, but note that `pitchfork` depends
+on `beautifulsoup4` for HTML parsing so you first have to install
+`beautifulsoup4` yourself !!!
 
 .. code:: sh
 
     git clone https://github.com/michalczaplinski/pitchfork.git
 
-Usage
------
+## Usage
 
 .. code:: python
 
@@ -53,30 +53,27 @@ Usage
     10.0
     # pretty overrated IMHO!
 
-Tests
------
+## Tests
 
-You can run the basic tests located in the ``tests`` directory with:
+You can run the basic tests located in the `tests` directory with:
 
 .. code:: sh
 
     $ cd pitchfork
     $ python3 -m unittest discover
 
-License
--------
+## License
 
 MIT
 
-Contributions
--------------
+## Contributions
 
 If you want to add some new feature, suggest improvement or whatnot
 you're welcome to message me or send a pull request!
 
 .. |Build Status| image:: https://travis-ci.org/michalczaplinski/pitchfork.svg?branch=master
-   :target: https://travis-ci.org/michalczaplinski/pitchfork
+:target: https://travis-ci.org/michalczaplinski/pitchfork
 .. |Latest Version| image:: https://pypip.in/v/pitchfork/badge.png
-   :target: https://pypi.python.org/pypi/pitchfork/
+:target: https://pypi.python.org/pypi/pitchfork/
 .. |Downloads| image:: https://pypip.in/download/pitchfork/badge.png
-   :target: https://pypi.python.org/pypi/pitchfork/
+:target: https://pypi.python.org/pypi/pitchfork/

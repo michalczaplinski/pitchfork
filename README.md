@@ -1,14 +1,13 @@
-pitchfork
-=========
+> **Note:** As of May 2025, this project is not actively maintained. If you've contributed before contact me and I'll happily give you maintainer status.
+
+# pitchfork
+
 An unofficial python API for [pitchfork.com](http://www.pitchfork.com) reviews.
 
-
-[![Build Status](https://travis-ci.org/michalczaplinski/pitchfork.svg?branch=master)]() 
+[![Build Status](https://travis-ci.org/michalczaplinski/pitchfork.svg?branch=master)]()
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Pitchfork.svg)](https://pypi.org/project/pitchfork/)
 
-
-Installation
-------------
+## Installation
 
 You can get it from [python package index](https://pypi.python.org/pypi):
 
@@ -16,7 +15,7 @@ You can get it from [python package index](https://pypi.python.org/pypi):
 pip install pitchfork
 ```
 
-You can also clone the repository, but note that ``pitchfork`` depends on ``beautifulsoup4`` for HTML parsing so you first have to install ``beautifulsoup4`` yourself:
+You can also clone the repository, but note that `pitchfork` depends on `beautifulsoup4` for HTML parsing so you first have to install `beautifulsoup4` yourself:
 
 ```sh
 git clone https://github.com/michalczaplinski/pitchfork.git
@@ -24,9 +23,7 @@ cd pitchfork
 pip install -r requirements.txt
 ```
 
-
-Usage
------
+## Usage
 
 ```python
 >> import pitchfork
@@ -50,20 +47,19 @@ u"Kanye West's 35-minute super-video,\xa0Runaway, peaks with a parade. Fireworks
 # pretty overrated IMHO!
 ```
 
-Tests
------
+## Tests
 
-You can run the basic tests located in the ``tests`` directory with:
+You can run the basic tests located in the `tests` directory with:
+
 ```sh
 $ cd path/to/tests
 $ python -m unittest discover
 ```
 
-License
--------
+## License
+
 MIT
 
+## Contributions
 
-Contributions
--------------
 If you want to add some new feature, suggest improvement or whatnot you're welcome to message me or send a pull request!
